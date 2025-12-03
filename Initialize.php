@@ -4,6 +4,7 @@ namespace Fmk;
 
 class Initialize
 {
+    public static string $configs_path = __DIR__ . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR;
     public static function run()
     {
         self::loadConfigs();
@@ -12,10 +13,10 @@ class Initialize
 
     private static function loadConfigs()
     {
-        $configs_path = __DIR__ . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR;
-        $constantes = require $configs_path . 'constants.php';
+        
+        $constantes = require self::$configs_path . 'constants.php';
         self::createConstants($constantes);
-        defined('DATABASE_DRIVERS') || define('DATABASE_DRIVERS',require $configs_path.'database_drivers.php');
+        defined('DATABASE_DRIVERS') || define('DATABASE_DRIVERS',require self::$configs_path.'database_drivers.php');
     }
 
     public static function createConstants($constants)
@@ -40,4 +41,6 @@ class Initialize
             require_once $file;
         }
     }
+
+   
 }

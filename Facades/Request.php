@@ -3,11 +3,12 @@
 namespace Fmk\Facades;
 
 use Fmk\Traits\Singleton;
+use Fmk\Traits\Validate;
 
 class Request
 {
     use Singleton;
-
+    use Validate;
 
     protected $uri;
     protected $method;
@@ -86,7 +87,7 @@ class Request
         exit;
     }
 
-    public function only($names){
+    protected function only($names){
         $names = is_array($names)?$names:func_get_args();
         $data = [];
         foreach($names as $key){
