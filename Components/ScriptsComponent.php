@@ -49,6 +49,10 @@ class ScriptsComponent extends Component
     }
 
     protected static function renderScript($src){
+        if(!str_contains($src, 'https://')) {
+            $src = defined('APPLICATION_URL') ?
+                constant('APPLICATION_URL').DIRECTORY_SEPARATOR.$src : constant('APPLICATION_PATH').DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$src;
+        }
         return "<script src=\"$src\"></script>\n";
     }
 
