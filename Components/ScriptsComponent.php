@@ -23,6 +23,7 @@ class ScriptsComponent extends Component
             }
             $instance->scripts[$key]['use'] = true;
         }
+        return $instance;
     }
 
     protected static function getInstance(){
