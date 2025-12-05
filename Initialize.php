@@ -9,6 +9,9 @@ class Initialize
     {
         self::loadConfigs();
         self::loadHelpers();
+        // Load application helpers and custom rules (app folder)
+        self::loadAppHelpers();
+        self::loadAppRules();
     }
 
     private static function loadConfigs()
@@ -39,6 +42,34 @@ class Initialize
         $files = glob($helpers_path . '*.php');
         foreach ($files as $file) {
             require_once $file;
+        }
+    }
+
+    /**
+     * Load helpers from the application `app/helpers` folder if present
+     */
+    public static function loadAppHelpers()
+    {
+        $app_helpers = (defined('APP_PATH') ? constant('APP_PATH') : __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'app') . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR;
+        if (is_dir($app_helpers)) {
+            foreach (glob($app_helpers . '*.php') as $file) {
+                require_once $file;
+            }
+        }
+    }
+
+    /**
+     * Ensure application rules config is available for Validate facade
+     */
+    public static function loadAppRules()
+    {
+        // No direct require here; Validate will merge framework rules with app/configs/rules.php via Config::get
+        // But if there are rule class files under app/Rules we can require them to be available (optional)
+        $app_rules_path = (defined('APP_PATH') ? constant('APP_PATH') : __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'app') . DIRECTORY_SEPARATOR . 'Rules' . DIRECTORY_SEPARATOR;
+        if (is_dir($app_rules_path)) {
+            foreach (glob($app_rules_path . '*.php') as $file) {
+                require_once $file;
+            }
         }
     }
 
