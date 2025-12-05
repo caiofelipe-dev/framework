@@ -52,23 +52,39 @@ class Session
             $_SESSION[static::DATA_KEY][$name] = $value;
     }
 
+    /**
+     * Redireciona chamadas de métodos estáticos para a instância singleton
+     * @param mixed $name
+     * @param mixed $arguments
+     */
     public static function __callStatic($name, $arguments)
     {
         return call_user_func_array([static::getInstance(), $name], $arguments);
 
     }
 
+    /**
+     * Redireciona chamadas de métodos não estáticos para a instância singleton
+     * @param mixed $name
+     * @param mixed $arguments
+     */
     public function __call($name, $arguments)
     {
         return call_user_func_array([static::getInstance(), $name], $arguments);
     }
 
+    /**
+     * Retorna todos os dados armazenados na sessão
+     */
     protected function all()
     {
         return $_SESSION[static::DATA_KEY];
     }
 
-    
+    /**
+     * Metodo para obter o valor de uma chave e removê-la da sessão
+     * @param mixed $name
+     */
     protected function flush($name){
         $flush = $this->$name;
         unset($this->$name);

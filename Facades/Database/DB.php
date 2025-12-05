@@ -9,7 +9,9 @@ class DB{
     protected $parameters;
  
     public function __construct($connection_name){
-        $database_file = defined('DATABASE_CONFIG_FILE')?constant('DATABASE_COINFIG_FILE'):'database';
+        // Nome do arquivo de configuração que contém conexões de banco.
+        // Usa a constante `DATABASE_CONFIG_FILE` se estiver definida, caso contrário 'database'.
+        $database_file = defined('DATABASE_CONFIG_FILE') ? constant('DATABASE_CONFIG_FILE') : 'database';
         $parameters = Config::get($database_file.".".$connection_name);
         if(!isset($parameters['driver'])){
             throw new Exception("Driver é um parametro obrigatório para estabelecer uma conexão com a base de dados");
