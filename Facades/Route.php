@@ -133,6 +133,9 @@ class Route
     {
         return $this->uri;
     }
+    public function isActive(){
+        return $this->active;
+    }
 
     public function redirect()
     {
