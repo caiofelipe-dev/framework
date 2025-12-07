@@ -133,6 +133,9 @@ class Route
     {
         return $this->uri;
     }
+    public function getName() {
+        return $this->name;
+    }
     public function isActive(){
         return $this->active;
     }
