@@ -42,7 +42,12 @@ class Component extends View
     }
 
     public function attr(string $atributo, string|array $valor) {
-        (isset($this->attributes[$atributo])) ? $this->attributes[$atributo][] = $valor : $this->attributes[] = $valor;
+        if(isset($this->attributes["$atributo"])) {
+            if($this->attributes["$atributo"] === $valor || in_array($valor, $this->attributes["$atributo"]))
+                return $this;
+            $this->attributes["$atributo"][] = $valor;  
+        } else
+            $this->attributes["$atributo"] = $valor;
         return $this;
     }
     public function attrs(array $atributos) {
@@ -67,9 +72,25 @@ class Component extends View
         $this->content = is_array($content) ? $content : func_get_args();
         return $this;
     }
+    public function updateAttr(string $atributo, string|array $novo_valor) {
+        (!isset($this->attributes["$atributo"])) || $this->attributes["$atributo"] = $novo_valor;
+        return $this;
+    }
 
     public function getContents() {
-        return implode($this->content);
+        $html = '';
+        foreach($this->content as $content) {
+            if($content instanceof Component) {
+                $html .= $content->render();
+                continue;
+            }
+            if(is_array($content)) {
+                $html .= implode($content);
+            }
+            if(is_string($content))
+                $html .= $content;
+        }
+        return $html;
     }
 
     // component->setTab(false)->render()
@@ -79,9 +100,14 @@ class Component extends View
         return $this;
     }
 
+    public function __toString()
+    {
+        return parent::__toString();
+    }
+    
     public function render(array $data = [])
     {
-        if(isset($this->view_file))
+        if($this->view_file)
             return parent::render($data);
         
         ob_start();
@@ -115,6 +141,10 @@ class Component extends View
         foreach($this->attributes as $key => $value) {
             $html .= " $key=\"";
             if(is_array($value)) {
+                foreach($value as &$v) {
+                    if(is_array($v))
+                        $v = implode(' ',$v);
+                }
                 $html .= implode(' ',$value)."\"";
                 continue;
             }
