@@ -42,16 +42,23 @@ class Component extends View
     }
 
     public function attr(string $atributo, string|array $valor) {
-        if(isset($this->attributes["$atributo"])) {
-            if($this->attributes["$atributo"] === $valor || in_array($valor, $this->attributes["$atributo"]))
+        if($valor == NULL || str_replace(' ', '', $valor) == '' || $valor == [])
+            return $this;
+            if(\is_array($valor)) {
+                foreach($valor as $v) {
+                    $this->attr($atributo, $v);
+                }
                 return $this;
-            $this->attributes["$atributo"][] = $valor;  
-        } else
-            $this->attributes["$atributo"] = $valor;
+            }
+        if(isset($this->attributes["$atributo"]) && \in_array($valor, $this->attributes["$atributo"]))
+            return $this;
+        $this->attributes["$atributo"][] = trim($valor);
         return $this;
     }
     public function attrs(array $atributos) {
-        $this->attributes = array_merge($this->attributes, $atributos);
+        foreach($atributos as $key => $value) {
+            $this->attr($key, $value);
+        }
         return $this;
     }
     // 'nav', 'collappse'
@@ -73,7 +80,7 @@ class Component extends View
         return $this;
     }
     public function updateAttr(string $atributo, string|array $novo_valor) {
-        (!isset($this->attributes["$atributo"])) || $this->attributes["$atributo"] = $novo_valor;
+        (isset($this->attributes["$atributo"])) || $this->attributes["$atributo"] = $novo_valor;
         return $this;
     }
 
