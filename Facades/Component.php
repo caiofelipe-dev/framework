@@ -42,6 +42,8 @@ class Component extends View
     }
 
     public function attr(string $atributo, string|array $valor) {
+        if(is_null($valor) || $valor == [] || $valor == "")
+            return $this;
         if(isset($this->attributes["$atributo"])) {
             if($this->attributes["$atributo"] === $valor || in_array($valor, $this->attributes["$atributo"]))
                 return $this;
@@ -55,7 +57,7 @@ class Component extends View
         return $this;
     }
     // 'nav', 'collappse'
-    public function class(string ...$classes) {
+    public function class(?string ...$classes) {
         $this->attr('class', $classes);
         return $this;
     }
@@ -77,7 +79,28 @@ class Component extends View
         return $this;
     }
 
-    public function getContents() {
+    // component->setTab(false)->render()
+    public function setTab(bool $tab = true)
+    {
+        $this->tab = $tab;
+        return $this;
+    }
+    public function &getContents() {
+        return $this->content;
+    }
+    public function &getContentBy($key) {
+        return $this->content[$key];
+    }
+    public function &getContentFirst() {
+        return $this->content[array_key_first($this->content)];
+    }
+    
+    public function __toString()
+    {
+        return parent::__toString();
+    }
+
+    public function renderContents() {
         $html = '';
         foreach($this->content as $content) {
             if($content instanceof Component) {
@@ -93,18 +116,6 @@ class Component extends View
         return $html;
     }
 
-    // component->setTab(false)->render()
-    public function setTab(bool $tab = true)
-    {
-        $this->tab = $tab;
-        return $this;
-    }
-
-    public function __toString()
-    {
-        return parent::__toString();
-    }
-    
     public function render(array $data = [])
     {
         if($this->view_file)
@@ -118,14 +129,14 @@ class Component extends View
             $new_line = '\n';
         }
         echo "$new_line$tab";
-        echo ($this->tag) ? $this->renderTag() : $this->getContents();
+        echo ($this->tag) ? $this->renderTag() : $this->renderContents();
 
         return ob_get_clean();
     }
 
     public function renderTag() {
         $html = '';
-        $html .= "<".$this->tag.$this->renderAttrs().">".$this->getContents();
+        $html .= "<".$this->tag.$this->renderAttrs().">".$this->renderContents();
         if(!in_array($this->tag, $this->voids))
             $html .= "</$this->tag>";
         return $html;
