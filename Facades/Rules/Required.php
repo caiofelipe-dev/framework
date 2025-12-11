@@ -11,6 +11,6 @@ class Required implements \Fmk\Interfaces\Rule
 
     public function error($atribute): string
     {
-        return "O campo $atribute é de preesnchimento obrigatório.";
+        return "O campo $atribute é de preenchimento obrigatório.";
     }
 }
