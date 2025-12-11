@@ -88,7 +88,7 @@ class Component extends View
     public function &getContents() {
         return $this->content;
     }
-    public function &getContentBy($key) {
+    public function &getContentByKey($key) {
         return $this->content[$key];
     }
     public function &getContentFirst() {
